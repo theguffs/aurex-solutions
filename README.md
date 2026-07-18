@@ -1,36 +1,59 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Aurex Solutions
 
-## Getting Started
+Sito di raccolta CV per chi cerca lavoro a Roma come **cameriere**, **barista**, **cuoco** o **hostess**.  
+Nessuna agenzia pubblica sul sito: quando hai una posizione, contatti tu i candidati per telefono o WhatsApp.
 
-First, run the development server:
+## Avvio locale
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Apri [http://localhost:3000](http://localhost:3000).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Configurazione
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Copia `.env.example` in `.env.local` e completa:
 
-## Learn More
+| Variabile | Uso |
+|-----------|-----|
+| `NOTIFY_EMAIL` | Email dove ricevi le candidature |
+| `RESEND_API_KEY` | API key [Resend](https://resend.com) |
+| `RESEND_FROM` | Mittente verificato su Resend |
+| `LEADS_WEBHOOK_URL` | Opzionale: Make / Zapier / Google Apps Script → Sheet |
+| `NEXT_PUBLIC_CONTACT_EMAIL` | Email pubblica in footer/contatti |
+| `NEXT_PUBLIC_SITE_URL` | URL pubblico (SEO, sitemap, Open Graph) |
+| `NEXT_PUBLIC_GA_ID` | Opzionale: Google Analytics 4 |
+| `NEXT_PUBLIC_META_PIXEL_ID` | Opzionale: Meta Pixel |
 
-To learn more about Next.js, take a look at the following resources:
+Senza Resend, le candidature vengono comunque salvate in locale in `data/candidature.json` e i CV in `data/cv/`.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### Collegare Google Sheet (consigliato)
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+1. Crea uno scenario Make/Zapier: webhook → Google Sheets (nuova riga).
+2. Oppure uno script Apps Script che riceve POST JSON e scrive sul foglio.
+3. Incolla l’URL in `LEADS_WEBHOOK_URL`.
 
-## Deploy on Vercel
+## Pagine
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- `/` — home
+- `/candidati` — form
+- `/lavoro-cameriere-roma`, `/lavoro-barista-roma`, `/lavoro-cuoco-roma`, `/lavoro-hostess-roma` — SEO
+- `/privacy` — informativa
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Deploy
+
+1. Domino `.it` (es. `camerieriroma.it`)
+2. Deploy su [Vercel](https://vercel.com) collegando il repo
+3. Imposta le variabili d’ambiente nel pannello Vercel
+
+Su Vercel il filesystem è effimero: per produzione usa Resend (email + CV allegato) e/o il webhook verso Sheet.
+
+## Pubblicità
+
+Campagne verso chi cerca lavoro:
+
+- Google Ads: “lavoro cameriere Roma”, “lavoro barista Roma”, ecc.
+- Meta Ads: targeting Roma, 18–45, hospitality
+- Misura il **costo per CV completo** (telefono valido)
