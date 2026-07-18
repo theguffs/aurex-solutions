@@ -132,12 +132,17 @@ export async function POST(request: Request) {
       cv,
     });
 
-    await Promise.allSettled([
-      sendCandidaturaEmail(record, cv),
-      forwardToWebhook(record),
-    ]);
+    const emailResult = await sendCandidaturaEmail(record, cv);
+    if (!emailResult.sent) {
+      console.error("Email candidatura non inviata:", emailResult);
+    }
+    await Promise.allSettled([forwardToWebhook(record)]);
 
-    return NextResponse.json({ ok: true, id: record.id });
+    return NextResponse.json({
+      ok: true,
+      id: record.id,
+      emailSent: emailResult.sent,
+    });
   } catch (error) {
     console.error("candidatura error", error);
     return NextResponse.json(

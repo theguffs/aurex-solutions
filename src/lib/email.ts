@@ -32,7 +32,7 @@ export async function sendCandidaturaEmail(
         ]
       : undefined;
 
-  await resend.emails.send({
+  const { data, error } = await resend.emails.send({
     from,
     to: [to],
     subject: `Nuova candidatura: ${record.nome} (${ruoli})`,
@@ -56,7 +56,12 @@ export async function sendCandidaturaEmail(
     attachments,
   });
 
-  return { sent: true as const };
+  if (error) {
+    console.error("Resend error:", error);
+    return { sent: false as const, reason: "resend_error" as const, error };
+  }
+
+  return { sent: true as const, id: data?.id };
 }
 
 export async function forwardToWebhook(record: CandidaturaRecord) {
