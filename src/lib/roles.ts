@@ -14,7 +14,7 @@ export const ROLES = [
       "cameriere ristorante Roma",
     ],
     seoBody:
-      "Aurex Solutions raccoglie candidature per camerieri e personale di sala a Roma e in tutta Italia. Compila il form con esperienza, disponibilità e CV: quando emerge una posizione in linea, ti ricontattiamo direttamente.",
+      "Aurex Solutions raccoglie candidature per camerieri e personale di sala a Roma e in tutta Italia. Compila il form con disponibilità e CV: quando emerge una posizione in linea, ti ricontattiamo direttamente.",
   },
   {
     id: "barista",

@@ -35,11 +35,10 @@ export default function PrivacyPage() {
         <h2>Dati raccolti</h2>
         <p>
           Attraverso il form possiamo raccogliere: nome e cognome, numero di
-          telefono / WhatsApp, email, ruolo richiesto, esperienza, disponibilità
-          contrattuale (part-time, full-time, weekend, solo eventi, P.IVA),
-          certificazioni (HACCP e sicurezza sul lavoro con stato di validità),
-          note e CV in formato PDF. Il consenso privacy GDPR è obbligatorio per
-          l’invio della candidatura.
+          telefono / WhatsApp, email, ruolo richiesto, P.IVA (in possesso / non in
+          possesso), disponibilità contrattuale, certificazioni (HACCP e sicurezza
+          sul lavoro con stato di validità), note e CV in formato PDF. Il consenso
+          privacy GDPR è obbligatorio per l’invio della candidatura.
         </p>
 
         <h2>Finalità e base giuridica</h2>

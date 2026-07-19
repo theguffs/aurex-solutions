@@ -4,23 +4,11 @@ export function HowItWorks() {
       <div className="shell">
         <h2>Come funziona</h2>
         <p className="section-lead">
-          Processo diretto, senza bacheca pubblica: valuti tu il profilo, ti
-          richiamiamo noi quando serve.
+          Bastano pochi minuti per candidarti con ruolo, telefono e CV: nessuna
+          bacheca pubblica, il tuo profilo resta con noi in archivio riservato, e
+          ti richiamiamo, per telefono o WhatsApp, non appena c’è un’opportunità
+          che fa per te.
         </p>
-        <ol className="steps">
-          <li>
-            <strong>Invii la candidatura</strong>
-            <span>Ruolo, telefono e CV in pochi minuti.</span>
-          </li>
-          <li>
-            <strong>Restiamo selettivi</strong>
-            <span>I profili restano nel nostro archivio riservato.</span>
-          </li>
-          <li>
-            <strong>Ti chiamiamo noi</strong>
-            <span>Telefono o WhatsApp, solo se c’è un posto in linea.</span>
-          </li>
-        </ol>
       </div>
     </section>
   );

@@ -8,6 +8,8 @@ import {
   type CertificazioneStatoId,
   DISPONIBILITA_CONTRATTUALE,
   type DisponibilitaContrattualeId,
+  PIVA_STATI,
+  type PivaStatoId,
 } from "@/lib/form-options";
 
 type Props = {
@@ -23,6 +25,7 @@ export function ApplicationForm({ defaultRuoli = [] }: Props) {
   const [disponibilita, setDisponibilita] = useState<DisponibilitaContrattualeId[]>(
     [],
   );
+  const [piva, setPiva] = useState<PivaStatoId>("non-in-possesso");
   const [haccp, setHaccp] = useState<CertificazioneStatoId>("non-in-possesso");
   const [sicurezza, setSicurezza] =
     useState<CertificazioneStatoId>("non-in-possesso");
@@ -50,6 +53,7 @@ export function ApplicationForm({ defaultRuoli = [] }: Props) {
     data.delete("disponibilitaContrattuale");
     selected.forEach((role) => data.append("ruoli", role));
     disponibilita.forEach((item) => data.append("disponibilitaContrattuale", item));
+    data.set("piva", piva);
     data.set("certHaccp", haccp);
     data.set("certSicurezza", sicurezza);
 
@@ -68,6 +72,7 @@ export function ApplicationForm({ defaultRuoli = [] }: Props) {
       form.reset();
       setSelected(defaultRuoli);
       setDisponibilita([]);
+      setPiva("non-in-possesso");
       setHaccp("non-in-possesso");
       setSicurezza("non-in-possesso");
     } catch {
@@ -156,13 +161,20 @@ export function ApplicationForm({ defaultRuoli = [] }: Props) {
       </fieldset>
 
       <div className="field">
-        <label htmlFor="esperienza">Esperienza</label>
-        <input
-          id="esperienza"
-          name="esperienza"
-          type="text"
-          placeholder="Es. 2 anni in sala"
-        />
+        <label htmlFor="piva">P.IVA</label>
+        <select
+          id="piva"
+          name="piva"
+          value={piva}
+          onChange={(e) => setPiva(e.target.value as PivaStatoId)}
+          required
+        >
+          {PIVA_STATI.map((stato) => (
+            <option key={stato.id} value={stato.id}>
+              {stato.label}
+            </option>
+          ))}
+        </select>
       </div>
 
       <fieldset className="field">

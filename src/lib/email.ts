@@ -1,7 +1,7 @@
 import { Resend } from "resend";
 import type { CandidaturaRecord } from "./store";
 import { SITE } from "./site";
-import { labelCertificazione, labelDisponibilita } from "./form-options";
+import { labelCertificazione, labelDisponibilita, labelPiva } from "./form-options";
 
 export async function sendCandidaturaEmail(
   record: CandidaturaRecord,
@@ -43,7 +43,7 @@ export async function sendCandidaturaEmail(
       `Telefono / WhatsApp: ${record.telefono}`,
       `Email: ${record.email}`,
       `Ruoli: ${ruoli}`,
-      `Esperienza: ${record.esperienza || "—"}`,
+      `P.IVA: ${labelPiva(record.piva)}`,
       `Disponibilità contrattuale: ${labelDisponibilita(record.disponibilitaContrattuale) || "—"}`,
       `HACCP: ${labelCertificazione(record.certHaccp)}`,
       `Sicurezza: ${labelCertificazione(record.certSicurezza)}`,

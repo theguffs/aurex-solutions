@@ -5,6 +5,8 @@ import {
   type CertificazioneStatoId,
   DISPONIBILITA_CONTRATTUALE,
   type DisponibilitaContrattualeId,
+  PIVA_STATI,
+  type PivaStatoId,
 } from "@/lib/form-options";
 import { saveCandidatura } from "@/lib/store";
 import { forwardToWebhook, sendCandidaturaEmail } from "@/lib/email";
@@ -15,6 +17,7 @@ const MAX_CV_BYTES = 5 * 1024 * 1024;
 const VALID_ROLES = new Set(ROLES.map((r) => r.id));
 const VALID_DISP = new Set(DISPONIBILITA_CONTRATTUALE.map((d) => d.id));
 const VALID_CERT = new Set(CERTIFICAZIONE_STATI.map((c) => c.id));
+const VALID_PIVA = new Set(PIVA_STATI.map((p) => p.id));
 
 function isValidEmail(email: string) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
@@ -29,6 +32,10 @@ function isCertStato(value: string): value is CertificazioneStatoId {
   return VALID_CERT.has(value as CertificazioneStatoId);
 }
 
+function isPivaStato(value: string): value is PivaStatoId {
+  return VALID_PIVA.has(value as PivaStatoId);
+}
+
 export async function POST(request: Request) {
   try {
     const form = await request.formData();
@@ -36,7 +43,7 @@ export async function POST(request: Request) {
     const nome = String(form.get("nome") || "").trim();
     const telefono = String(form.get("telefono") || "").trim();
     const email = String(form.get("email") || "").trim();
-    const esperienza = String(form.get("esperienza") || "").trim();
+    const piva = String(form.get("piva") || "non-in-possesso");
     const messaggio = String(form.get("messaggio") || "").trim();
     const privacy =
       form.get("privacy") === "on" || form.get("privacy") === "true";
@@ -73,6 +80,12 @@ export async function POST(request: Request) {
     if (disponibilitaContrattuale.length === 0) {
       return NextResponse.json(
         { error: "Seleziona almeno un tipo di disponibilità contrattuale." },
+        { status: 400 },
+      );
+    }
+    if (!isPivaStato(piva)) {
+      return NextResponse.json(
+        { error: "Indica se sei in possesso di P.IVA." },
         { status: 400 },
       );
     }
@@ -122,7 +135,7 @@ export async function POST(request: Request) {
       telefono,
       email,
       ruoli,
-      esperienza,
+      piva,
       disponibilitaContrattuale,
       certHaccp,
       certSicurezza,

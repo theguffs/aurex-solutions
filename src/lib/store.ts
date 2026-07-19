@@ -8,7 +8,7 @@ export type CandidaturaRecord = {
   telefono: string;
   email: string;
   ruoli: string[];
-  esperienza: string;
+  piva: string;
   disponibilitaContrattuale: string[];
   certHaccp: string;
   certSicurezza: string;
@@ -58,7 +58,7 @@ export async function saveCandidatura(
     telefono: record.telefono,
     email: record.email,
     ruoli: record.ruoli,
-    esperienza: record.esperienza,
+    piva: record.piva,
     disponibilitaContrattuale: record.disponibilitaContrattuale,
     certHaccp: record.certHaccp,
     certSicurezza: record.certSicurezza,
