@@ -10,7 +10,8 @@ export async function sendCandidaturaEmail(
   const apiKey = process.env.RESEND_API_KEY;
   const to = process.env.NOTIFY_EMAIL || SITE.email;
   const from =
-    process.env.RESEND_FROM || `${SITE.name} <onboarding@resend.dev>`;
+    process.env.RESEND_FROM ||
+    `${SITE.name} <candidature@lavorohospitalityroma.it>`;
 
   if (!apiKey) {
     console.warn(
@@ -18,6 +19,8 @@ export async function sendCandidaturaEmail(
     );
     return { sent: false as const, reason: "missing_config" as const };
   }
+
+  console.info("Invio candidatura Resend:", { from, to });
 
   const resend = new Resend(apiKey);
   const ruoli = record.ruoli.join(", ");
