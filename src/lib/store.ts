@@ -18,10 +18,11 @@ export type CandidaturaRecord = {
   cvStoredPath: string | null;
 };
 
-/** Su Vercel il filesystem del progetto è read-only: usiamo /tmp. */
-const DATA_DIR = process.env.VERCEL
-  ? path.join("/tmp", "aurex-data")
-  : path.join(process.cwd(), "data");
+/** Su Vercel/Lambda il filesystem del progetto è read-only: usiamo /tmp. */
+const DATA_DIR =
+  process.env.VERCEL || process.env.AWS_LAMBDA_FUNCTION_NAME
+    ? path.join("/tmp", "aurex-data")
+    : path.join(process.cwd(), "data");
 const CV_DIR = path.join(DATA_DIR, "cv");
 const JSON_PATH = path.join(DATA_DIR, "candidature.json");
 
