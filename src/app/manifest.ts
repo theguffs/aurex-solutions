@@ -14,15 +14,22 @@ export default function manifest(): MetadataRoute.Manifest {
     lang: "it",
     icons: [
       {
-        src: "/logo-aurex.png",
-        sizes: "1024x1024",
+        src: "/favicon.png",
+        sizes: "48x48",
         type: "image/png",
         purpose: "any",
       },
       {
-        src: "/icon",
-        sizes: "32x32",
+        src: "/icon-192.png",
+        sizes: "192x192",
         type: "image/png",
+        purpose: "any",
+      },
+      {
+        src: "/logo-aurex.png",
+        sizes: "1024x1024",
+        type: "image/png",
+        purpose: "any",
       },
     ],
   };
