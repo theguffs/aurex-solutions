@@ -150,7 +150,10 @@ export async function POST(request: Request) {
       emailResult = await sendCandidaturaEmail(record, cv);
     } catch (error) {
       console.error("Email candidatura exception:", error);
-      emailResult = { sent: false as const, reason: "resend_error" as const };
+      emailResult = {
+        sent: false as const,
+        reason: "missing_config" as const,
+      };
     }
 
     if (!emailResult.sent) {
