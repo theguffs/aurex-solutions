@@ -145,10 +145,25 @@ export async function POST(request: Request) {
       cv,
     });
 
-    const emailResult = await sendCandidaturaEmail(record, cv);
+    let emailResult: Awaited<ReturnType<typeof sendCandidaturaEmail>>;
+    try {
+      emailResult = await sendCandidaturaEmail(record, cv);
+    } catch (error) {
+      console.error("Email candidatura exception:", error);
+      emailResult = { sent: false as const, reason: "resend_error" as const };
+    }
+
     if (!emailResult.sent) {
       console.error("Email candidatura non inviata:", emailResult);
+      return NextResponse.json(
+        {
+          error:
+            "Candidatura ricevuta ma l’email di notifica non è partita. Controlla Resend (dominio verificato e RESEND_FROM).",
+        },
+        { status: 502 },
+      );
     }
+
     await Promise.allSettled([forwardToWebhook(record)]);
 
     return NextResponse.json({

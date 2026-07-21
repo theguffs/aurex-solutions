@@ -18,7 +18,10 @@ export type CandidaturaRecord = {
   cvStoredPath: string | null;
 };
 
-const DATA_DIR = path.join(process.cwd(), "data");
+/** Su Vercel il filesystem del progetto è read-only: usiamo /tmp. */
+const DATA_DIR = process.env.VERCEL
+  ? path.join("/tmp", "aurex-data")
+  : path.join(process.cwd(), "data");
 const CV_DIR = path.join(DATA_DIR, "cv");
 const JSON_PATH = path.join(DATA_DIR, "candidature.json");
 
@@ -36,20 +39,10 @@ export async function saveCandidatura(
     cv?: { buffer: Buffer; fileName: string } | null;
   },
 ): Promise<CandidaturaRecord> {
-  await ensureDirs();
-
   const id = `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
   const createdAt = new Date().toISOString();
   let cvStoredPath: string | null = null;
   let cvFileName: string | null = record.cvFileName;
-
-  if (record.cv) {
-    const safeName = record.cv.fileName.replace(/[^a-zA-Z0-9._-]/g, "_");
-    const storedName = `${id}-${safeName}`;
-    cvStoredPath = path.join(CV_DIR, storedName);
-    await fs.writeFile(cvStoredPath, record.cv.buffer);
-    cvFileName = record.cv.fileName;
-  }
 
   const entry: CandidaturaRecord = {
     id,
@@ -68,10 +61,27 @@ export async function saveCandidatura(
     cvStoredPath,
   };
 
-  const raw = await fs.readFile(JSON_PATH, "utf8");
-  const list = JSON.parse(raw || "[]") as CandidaturaRecord[];
-  list.push(entry);
-  await fs.writeFile(JSON_PATH, JSON.stringify(list, null, 2), "utf8");
+  try {
+    await ensureDirs();
+
+    if (record.cv) {
+      const safeName = record.cv.fileName.replace(/[^a-zA-Z0-9._-]/g, "_");
+      const storedName = `${id}-${safeName}`;
+      cvStoredPath = path.join(CV_DIR, storedName);
+      await fs.writeFile(cvStoredPath, record.cv.buffer);
+      cvFileName = record.cv.fileName;
+      entry.cvStoredPath = cvStoredPath;
+      entry.cvFileName = cvFileName;
+    }
+
+    const raw = await fs.readFile(JSON_PATH, "utf8");
+    const list = JSON.parse(raw || "[]") as CandidaturaRecord[];
+    list.push(entry);
+    await fs.writeFile(JSON_PATH, JSON.stringify(list, null, 2), "utf8");
+  } catch (error) {
+    // Su serverless il disco può fallire: la candidatura resta via email.
+    console.warn("Salvataggio locale candidatura non riuscito:", error);
+  }
 
   return entry;
 }
