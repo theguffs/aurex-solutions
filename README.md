@@ -18,7 +18,8 @@ Copia `.env.example` in `.env.local` e completa:
 
 | Variabile | Uso |
 |-----------|-----|
-| `NOTIFY_EMAIL` | Email dove ricevi le candidature |
+| `NOTIFY_EMAIL` | Email del cliente dove arrivano le candidature (più indirizzi separati da virgola) |
+| `TRACKING_EMAIL` | Opzionale: tua email in BCC per conteggio contatti / fatturazione |
 | `RESEND_API_KEY` | API key [Resend](https://resend.com) |
 | `RESEND_FROM` | Mittente verificato su Resend |
 | `LEADS_WEBHOOK_URL` | Opzionale: Make / Zapier / Google Apps Script → Sheet |
