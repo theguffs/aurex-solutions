@@ -3,12 +3,27 @@ import type { CandidaturaRecord } from "./store";
 import { SITE } from "./site";
 import { labelCertificazione, labelDisponibilita, labelPiva } from "./form-options";
 
+function parseEmails(value: string | undefined) {
+  if (!value) return [];
+  return value
+    .split(/[,;]+/)
+    .map((email) => email.trim())
+    .filter(Boolean);
+}
+
 export async function sendCandidaturaEmail(
   record: CandidaturaRecord,
   cv?: { buffer: Buffer; fileName: string } | null,
 ) {
   const apiKey = process.env.RESEND_API_KEY;
-  const to = process.env.NOTIFY_EMAIL || SITE.email;
+  const to = parseEmails(process.env.NOTIFY_EMAIL);
+  if (to.length === 0 && SITE.email) to.push(SITE.email);
+
+  /** Copia nascosta per conteggio contatti / fatturazione (es. tua email). */
+  const bcc = parseEmails(process.env.TRACKING_EMAIL).filter(
+    (email) => !to.includes(email),
+  );
+
   const from =
     process.env.RESEND_FROM ||
     `${SITE.name} <candidature@lavorohospitalityroma.it>`;
@@ -20,7 +35,16 @@ export async function sendCandidaturaEmail(
     return { sent: false as const, reason: "missing_config" as const };
   }
 
-  console.info("Invio candidatura Resend:", { from, to });
+  if (to.length === 0) {
+    console.warn("Candidatura: manca NOTIFY_EMAIL, email non inviata.");
+    return { sent: false as const, reason: "missing_config" as const };
+  }
+
+  console.info("Invio candidatura Resend:", {
+    from,
+    to,
+    bccCount: bcc.length,
+  });
 
   const resend = new Resend(apiKey);
   const ruoli = record.ruoli.join(", ");
@@ -37,7 +61,8 @@ export async function sendCandidaturaEmail(
 
   const { data, error } = await resend.emails.send({
     from,
-    to: [to],
+    to,
+    ...(bcc.length > 0 ? { bcc } : {}),
     subject: `Nuova candidatura: ${record.nome} (${ruoli})`,
     text: [
       `Nuova candidatura da ${SITE.name}`,
